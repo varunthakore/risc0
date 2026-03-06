@@ -21,4 +21,5 @@ mod protos;
 pub(crate) mod prove_info;
 pub mod recursion;
 #[cfg(feature = "prove")]
-pub(crate) mod server;
+/// Server-side proving and session management.
+pub mod server;

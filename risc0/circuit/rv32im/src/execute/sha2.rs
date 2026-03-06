@@ -29,7 +29,7 @@ const SHA2_BACK: usize =
     (SHA2_LOAD_STATE_CYCLES + SHA2_LOAD_DATA_CYCLES + SHA2_MIX_CYCLES) as usize;
 
 #[derive(Clone, Debug)]
-pub(crate) struct Sha2State {
+pub struct Sha2State {
     pub state_in_addr: WordAddr,
     pub state_out_addr: WordAddr,
     pub data_addr: WordAddr,

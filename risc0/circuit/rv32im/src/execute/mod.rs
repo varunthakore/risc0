@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub(crate) mod bibc;
-pub(crate) mod bigint;
+pub mod bibc;
+pub mod bigint;
 mod executor;
-pub(crate) mod pager;
+pub mod pager;
 pub mod platform;
-pub(crate) mod poseidon2;
-pub(crate) mod r0vm;
-pub(crate) mod rv32im;
-pub(crate) mod segment;
-pub(crate) mod sha2;
+pub mod poseidon2;
+pub mod r0vm;
+pub mod rv32im;
+pub mod segment;
+pub mod sha2;
 mod syscall;
 #[cfg(test)]
 mod tests;
@@ -36,6 +36,6 @@ pub use self::{
 
 pub const DEFAULT_SEGMENT_LIMIT_PO2: usize = 20;
 
-pub(crate) fn node_idx(page_idx: u32) -> u32 {
+pub fn node_idx(page_idx: u32) -> u32 {
     MEMORY_PAGES as u32 + page_idx
 }

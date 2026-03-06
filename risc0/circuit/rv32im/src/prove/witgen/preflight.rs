@@ -43,7 +43,7 @@ use super::{
 };
 
 #[derive(Clone, Debug, Default)]
-pub(crate) enum Back {
+pub enum Back {
     #[default]
     None,
     Ecall(u32, u32, u32),
@@ -56,7 +56,7 @@ pub(crate) enum Back {
 }
 
 #[derive(Clone, Debug, Default)]
-pub(crate) struct PreflightTrace {
+pub struct PreflightTrace {
     #[debug("{}", cycles.len())]
     pub cycles: Vec<RawPreflightCycle>,
     #[debug("{}", txns.len())]
@@ -69,25 +69,25 @@ pub(crate) struct PreflightTrace {
     pub rand_z: ExtVal,
 }
 
-pub(crate) struct Preflight<'a> {
+pub struct Preflight<'a> {
     pub trace: PreflightTrace,
-    segment: &'a Segment,
-    pager: PagedMemory,
-    pc: ByteAddr,
-    machine_mode: u32,
-    cur_write: usize,
-    cur_read: usize,
-    user_cycle: u32,
-    txn_idx: u32,
-    bigint_idx: u32,
-    user_cycles: u32,
-    orig_words: PagedMap,
-    prev_cycle: PagedMap,
-    page_memory: PagedMap,
+    pub segment: &'a Segment,
+    pub pager: PagedMemory,
+    pub pc: ByteAddr,
+    pub machine_mode: u32,
+    pub cur_write: usize,
+    pub cur_read: usize,
+    pub user_cycle: u32,
+    pub txn_idx: u32,
+    pub bigint_idx: u32,
+    pub user_cycles: u32,
+    pub orig_words: PagedMap,
+    pub prev_cycle: PagedMap,
+    pub page_memory: PagedMap,
 }
 
 impl Segment {
-    pub(crate) fn preflight(&self, rand_z: ExtVal) -> Result<PreflightTrace> {
+    pub fn preflight(&self, rand_z: ExtVal) -> Result<PreflightTrace> {
         scope!("preflight");
         tracing::debug!("preflight: {self:#?}");
 
@@ -110,7 +110,7 @@ fn get_digest_addr(idx: u32) -> WordAddr {
 }
 
 impl<'a> Preflight<'a> {
-    fn new(segment: &'a Segment, rand_z: ExtVal) -> Self {
+    pub fn new(segment: &'a Segment, rand_z: ExtVal) -> Self {
         tracing::debug!("po2: {}", segment.po2);
         let total_cycles = 1 << segment.po2;
 
@@ -207,7 +207,7 @@ impl<'a> Preflight<'a> {
     }
 
     // Now, go back and update memory transactions to wrap around
-    fn wrap_memory_txns(&mut self) -> Result<()> {
+    pub fn wrap_memory_txns(&mut self) -> Result<()> {
         for txn in self.trace.txns.iter_mut() {
             // tracing::trace!("{txn:?}");
             let addr = WordAddr(txn.addr);
@@ -228,7 +228,7 @@ impl<'a> Preflight<'a> {
         Ok(())
     }
 
-    fn update_p2_zcheck(&mut self) -> Result<()> {
+    pub fn update_p2_zcheck(&mut self) -> Result<()> {
         let mut checksum = Checksum::new(&self.trace.rand_z);
         for (row, back) in self.trace.backs.iter_mut().enumerate() {
             if let Back::Poseidon2(p2_state) = back {
@@ -346,7 +346,7 @@ impl<'a> Preflight<'a> {
         Ok(())
     }
 
-    fn add_cycle(
+    pub fn add_cycle(
         &mut self,
         state: CycleState,
         pc: u32,
@@ -379,7 +379,7 @@ impl<'a> Preflight<'a> {
         self.trace.bigint_bytes.extend_from_slice(bytes);
     }
 
-    fn add_cycle_insn(&mut self, state: CycleState, pc: u32, insn: InsnKind) {
+    pub fn add_cycle_insn(&mut self, state: CycleState, pc: u32, insn: InsnKind) {
         match insn {
             InsnKind::Eany => {
                 // Technically we need to switch on the machine mode *entering* the EANY
@@ -419,7 +419,7 @@ impl<'a> Preflight<'a> {
         }
     }
 
-    fn add_cycle_special(
+    pub fn add_cycle_special(
         &mut self,
         cur_state: CycleState,
         next_state: CycleState,
@@ -434,7 +434,7 @@ impl<'a> Preflight<'a> {
         self.add_cycle(next_state, pc, major, minor, paging_idx, back);
     }
 
-    pub(crate) fn on_bigint_cycle(&mut self, cur_state: CycleState, bigint: &BigIntState) {
+    pub fn on_bigint_cycle(&mut self, cur_state: CycleState, bigint: &BigIntState) {
         self.add_witness(&bigint.bytes);
         self.add_cycle_special(
             cur_state,
@@ -663,7 +663,7 @@ impl InsnKind {
 }
 
 #[derive(Clone, Default, Debug)]
-pub(crate) struct PagingActivity {
+pub struct PagingActivity {
     pub pages: BTreeSet<u32>,
     pub nodes: BTreeSet<u32>,
 }
@@ -687,12 +687,12 @@ impl PagingActivity {
 }
 
 impl PagedMemory {
-    pub(crate) fn loaded_pages(&self) -> PagingActivity {
+    pub fn loaded_pages(&self) -> PagingActivity {
         tracing::trace!("loaded_pages: {:#010x?}", self.image.get_page_indexes());
         PagingActivity::new(self.image.get_page_indexes())
     }
 
-    pub(crate) fn dirty_pages(&self) -> PagingActivity {
+    pub fn dirty_pages(&self) -> PagingActivity {
         let pages = self
             .page_states
             .iter()

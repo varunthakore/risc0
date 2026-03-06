@@ -36,7 +36,7 @@ const BABY_BEAR_P_U32: u32 = baby_bear::P;
 const BABY_BEAR_P_U64: u64 = baby_bear::P as u64;
 
 #[derive(Clone, Debug, Default)]
-pub(crate) struct Poseidon2State {
+pub struct Poseidon2State {
     pub has_state: u32,
     pub state_addr: u32,
     pub buf_out_addr: u32,
@@ -84,11 +84,7 @@ impl Poseidon2State {
         *cur_state = next_state;
     }
 
-    pub(crate) fn rest(
-        &mut self,
-        ctx: &mut dyn Risc0Context,
-        final_state: CycleState,
-    ) -> Result<()> {
+    pub fn rest(&mut self, ctx: &mut dyn Risc0Context, final_state: CycleState) -> Result<()> {
         let mut cur_state = self.next_state;
         let state_addr = WordAddr(self.state_addr);
 
@@ -279,7 +275,7 @@ fn sbox2(x: u32) -> u32 {
     x7 as u32
 }
 
-pub(crate) struct Poseidon2;
+pub struct Poseidon2;
 
 impl Poseidon2 {
     pub fn ecall(ctx: &mut dyn Risc0Context) -> Result<()> {

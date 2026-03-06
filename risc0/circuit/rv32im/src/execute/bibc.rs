@@ -24,7 +24,7 @@ use num_derive::FromPrimitive;
 use num_traits::FromPrimitive;
 
 #[derive(Debug)]
-pub(crate) struct Type {
+pub struct Type {
     pub coeffs: u64,
     _max_pos: u64,
     _max_neg: u64,
@@ -32,7 +32,7 @@ pub(crate) struct Type {
 }
 
 #[derive(Debug)]
-pub(crate) struct Input {
+pub struct Input {
     _label: u64,
     _bit_width: u32,
     _min_bits: u16,
@@ -40,7 +40,7 @@ pub(crate) struct Input {
 }
 
 #[derive(Debug, FromPrimitive)]
-pub(crate) enum OpCode {
+pub enum OpCode {
     Const = 0x2, // unary: constant index
     Load = 0x3,  // unary: constant index
     Store = 0x4, // unary: constant index
@@ -53,21 +53,21 @@ pub(crate) enum OpCode {
 }
 
 #[derive(Debug)]
-pub(crate) struct Op {
+pub struct Op {
     pub code: OpCode,
     pub result_type: usize,
     pub a: usize,
     pub b: usize,
 }
 
-pub(crate) struct Program {
+pub struct Program {
     pub inputs: Vec<Input>,
     pub types: Vec<Type>,
     pub constants: Vec<u64>,
     pub ops: Vec<Op>,
 }
 
-pub(crate) trait BigIntIO {
+pub trait BigIntIO {
     fn load(&mut self, arena: u32, offset: u32, count: u32) -> Result<Natural>;
 
     fn store(&mut self, arena: u32, offset: u32, count: u32, value: &Natural) -> Result<()>;

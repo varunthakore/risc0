@@ -74,7 +74,8 @@ extern crate alloc;
 
 pub mod guest;
 #[cfg(not(target_os = "zkvm"))]
-mod host;
+/// Host-side execution and proving infrastructure.
+pub mod host;
 mod mmr;
 mod receipt;
 mod receipt_claim;

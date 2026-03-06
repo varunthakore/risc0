@@ -37,8 +37,8 @@ use super::exec::syscall::{SyscallKind, SyscallMetric};
 
 #[derive(Clone, Default, Serialize, Deserialize, Debug)]
 pub struct PageFaults {
-    pub(crate) reads: BTreeSet<u32>,
-    pub(crate) writes: BTreeSet<u32>,
+    pub reads: BTreeSet<u32>,
+    pub writes: BTreeSet<u32>,
 }
 
 /// The execution trace of a program.
@@ -96,17 +96,17 @@ pub struct Session {
 
     /// A list of pending ZKR proof requests.
     // TODO: make this scalable so we don't OOM
-    pub(crate) pending_zkrs: Vec<ProveZkrRequest>,
+    pub pending_zkrs: Vec<ProveZkrRequest>,
 
     /// A list of pending keccak proof requests.
     // TODO: make this scalable so we don't OOM
-    pub(crate) pending_keccaks: Vec<ProveKeccakRequest>,
+    pub pending_keccaks: Vec<ProveKeccakRequest>,
 
     /// ecall metrics grouped by name.
-    pub(crate) ecall_metrics: Vec<(String, EcallMetric)>,
+    pub ecall_metrics: Vec<(String, EcallMetric)>,
 
     /// syscall metrics grouped by kind.
-    pub(crate) syscall_metrics: EnumMap<SyscallKind, SyscallMetric>,
+    pub syscall_metrics: EnumMap<SyscallKind, SyscallMetric>,
 }
 
 /// The execution trace of a portion of a program.
@@ -122,9 +122,11 @@ pub struct Segment {
     /// The index of this [Segment] within the [Session]
     pub index: u32,
 
-    pub(crate) inner: risc0_circuit_rv32im::execute::Segment,
+    /// The inner circuit segment data.
+    pub inner: risc0_circuit_rv32im::execute::Segment,
 
-    pub(crate) output: Option<Output>,
+    /// The output produced by this segment (if any).
+    pub output: Option<Output>,
 }
 
 impl Segment {
@@ -135,7 +137,8 @@ impl Segment {
         self.inner.po2 as usize
     }
 
-    pub(crate) fn user_cycles(&self) -> u32 {
+    /// The number of user cycles in this segment.
+    pub fn user_cycles(&self) -> u32 {
         self.inner.suspend_cycle
     }
 }
@@ -177,7 +180,8 @@ impl Session {
         self.claim_with_assumptions(self.assumptions.iter().map(|(_, x)| x))
     }
 
-    pub(crate) fn claim_with_assumptions<'a>(
+    /// Calculate the [ReceiptClaim] with the given assumptions.
+    pub fn claim_with_assumptions<'a>(
         &self,
         assumptions: impl Iterator<Item = &'a AssumptionReceipt>,
     ) -> Result<ReceiptClaim> {

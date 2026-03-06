@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub(crate) mod exec;
+/// Execution engine and syscall handling.
+pub mod exec;
 #[cfg(feature = "prove")]
 pub(crate) mod prove;
 pub(crate) mod session;

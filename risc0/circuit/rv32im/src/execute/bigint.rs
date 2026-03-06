@@ -25,13 +25,13 @@ use super::{
 };
 
 /// BigInt width, in words, handled by the BigInt accelerator circuit.
-pub(crate) const BIGINT_WIDTH_WORDS: usize = 4;
+pub const BIGINT_WIDTH_WORDS: usize = 4;
 
 /// BigInt width, in bytes, handled by the BigInt accelerator circuit.
-pub(crate) const BIGINT_WIDTH_BYTES: usize = BIGINT_WIDTH_WORDS * WORD_SIZE;
+pub const BIGINT_WIDTH_BYTES: usize = BIGINT_WIDTH_WORDS * WORD_SIZE;
 
-pub(crate) type BigIntBytes = [u8; BIGINT_WIDTH_BYTES];
-pub(crate) type BigIntWitness = BTreeMap<WordAddr, BigIntBytes>;
+pub type BigIntBytes = [u8; BIGINT_WIDTH_BYTES];
+pub type BigIntWitness = BTreeMap<WordAddr, BigIntBytes>;
 
 fn bytes_le_to_bigint(bytes: &[u8]) -> Natural {
     let mut limbs = Vec::with_capacity((bytes.len() + 3) / 4);
@@ -117,11 +117,11 @@ impl BigIntIO for BigIntIOImpl<'_> {
     }
 }
 
-pub(crate) struct BigIntExec {
-    pub(crate) mode: u32,
-    pub(crate) verify_program_ptr: WordAddr,
-    pub(crate) verify_program_size: usize,
-    pub(crate) witness: BigIntWitness,
+pub struct BigIntExec {
+    pub mode: u32,
+    pub verify_program_ptr: WordAddr,
+    pub verify_program_size: usize,
+    pub witness: BigIntWitness,
 }
 
 pub fn ecall_execute(ctx: &mut dyn Risc0Context) -> Result<usize> {
@@ -136,7 +136,7 @@ pub fn ecall_execute(ctx: &mut dyn Risc0Context) -> Result<usize> {
     Ok(cycles)
 }
 
-pub(crate) fn ecall(ctx: &mut dyn Risc0Context) -> Result<BigIntExec> {
+pub fn ecall(ctx: &mut dyn Risc0Context) -> Result<BigIntExec> {
     tracing::debug!("ecall");
 
     let mode = ctx.load_machine_register(LoadOp::Record, REG_T0)?;

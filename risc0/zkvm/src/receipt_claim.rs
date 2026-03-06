@@ -148,10 +148,8 @@ impl ReceiptClaim {
         Ok(())
     }
 
-    pub(crate) fn decode_from_seal_v2(
-        seal: &[u32],
-        _po2: Option<u32>,
-    ) -> anyhow::Result<ReceiptClaim> {
+    /// Decode a [`ReceiptClaim`] from a v2 seal.
+    pub fn decode_from_seal_v2(seal: &[u32], _po2: Option<u32>) -> anyhow::Result<ReceiptClaim> {
         let claim = Rv32imV2Claim::decode(seal)?;
         tracing::debug!("claim: {claim:#?}");
 

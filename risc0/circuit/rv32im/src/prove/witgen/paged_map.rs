@@ -41,7 +41,7 @@ impl Default for PagedMapTable {
     }
 }
 
-pub(crate) struct PagedMap {
+pub struct PagedMap {
     high: PagedMapTable,
     mid: Vec<PagedMapTable>,
     low: Vec<PagedMapEntry>,

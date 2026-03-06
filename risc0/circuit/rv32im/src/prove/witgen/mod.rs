@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub(crate) mod bigint;
-pub(crate) mod byte_poly;
-pub(crate) mod paged_map;
-pub(crate) mod poseidon2;
-pub(crate) mod preflight;
-pub(crate) mod sha2;
+pub mod bigint;
+pub mod byte_poly;
+pub mod paged_map;
+pub mod poseidon2;
+pub mod preflight;
+pub mod sha2;
 #[cfg(test)]
 mod tests;
 
@@ -51,8 +51,8 @@ use crate::{
     },
 };
 
-pub(crate) struct WitnessGenerator<H: Hal> {
-    cycles: usize,
+pub struct WitnessGenerator<H: Hal> {
+    pub cycles: usize,
     pub global: MetaBuffer<H>,
     pub code: MetaBuffer<H>,
     pub data: MetaBuffer<H>,
@@ -286,15 +286,15 @@ where
 }
 
 #[derive(Debug)]
-struct Injector {
-    rows: usize,
-    offsets: Vec<u32>,
-    values: Vec<Val>,
-    index: Vec<u32>,
+pub struct Injector {
+    pub rows: usize,
+    pub offsets: Vec<u32>,
+    pub values: Vec<Val>,
+    pub index: Vec<u32>,
 }
 
 impl Injector {
-    fn new(rows: usize) -> Self {
+    pub fn new(rows: usize) -> Self {
         let mut index = Vec::with_capacity(rows + 1);
         index.push(0);
         Self {
@@ -305,11 +305,11 @@ impl Injector {
         }
     }
 
-    fn push(&mut self) {
+    pub fn push(&mut self) {
         self.index.push(self.offsets.len() as u32);
     }
 
-    fn set_cycle(&mut self, row: usize, cycle: &RawPreflightCycle) {
+    pub fn set_cycle(&mut self, row: usize, cycle: &RawPreflightCycle) {
         const CYCLE_COL: usize = LAYOUT_TOP.cycle._super.offset;
         const NEXT_PC_LOW: usize = LAYOUT_TOP.next_pc_low._super.offset;
         const NEXT_PC_HIGH: usize = LAYOUT_TOP.next_pc_high._super.offset;
@@ -323,20 +323,20 @@ impl Injector {
         self.push();
     }
 
-    fn set(&mut self, row: usize, col: usize, value: u32) {
+    pub fn set(&mut self, row: usize, col: usize, value: u32) {
         let idx = col * self.rows + row;
         self.offsets.push(idx as u32);
         self.values.push(value.into());
     }
 
-    fn set_u32_bits(&mut self, row: usize, col: usize, value: u32) {
+    pub fn set_u32_bits(&mut self, row: usize, col: usize, value: u32) {
         for i in 0..32 {
             self.set(row, col + i, (value >> i) & 1);
         }
     }
 }
 
-fn node_addr_to_idx(addr: WordAddr) -> u32 {
+pub fn node_addr_to_idx(addr: WordAddr) -> u32 {
     (MERKLE_TREE_END_ADDR - addr).0 / DIGEST_WORDS as u32
 }
 

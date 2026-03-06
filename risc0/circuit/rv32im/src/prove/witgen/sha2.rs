@@ -22,7 +22,7 @@ const SHA2_FP_COUNT: usize = 7;
 const SHA2_U32_COUNT: usize = 3;
 
 impl Sha2State {
-    pub(crate) const fn fp_offsets() -> [usize; SHA2_FP_COUNT] {
+    pub const fn fp_offsets() -> [usize; SHA2_FP_COUNT] {
         [
             SHA2_STATE_LAYOUT.state_in_addr._super.offset,
             SHA2_STATE_LAYOUT.state_out_addr._super.offset,
@@ -34,7 +34,7 @@ impl Sha2State {
         ]
     }
 
-    pub(crate) const fn u32_offsets() -> [usize; SHA2_U32_COUNT] {
+    pub const fn u32_offsets() -> [usize; SHA2_U32_COUNT] {
         [
             SHA2_STATE_LAYOUT.a[0]._super.offset,
             SHA2_STATE_LAYOUT.e[0]._super.offset,
@@ -42,7 +42,7 @@ impl Sha2State {
         ]
     }
 
-    pub(crate) fn fp_array(&self) -> [u32; SHA2_FP_COUNT] {
+    pub fn fp_array(&self) -> [u32; SHA2_FP_COUNT] {
         [
             self.state_in_addr.0,
             self.state_out_addr.0,
@@ -54,7 +54,7 @@ impl Sha2State {
         ]
     }
 
-    pub(crate) fn u32_array(&self) -> [u32; SHA2_U32_COUNT] {
+    pub fn u32_array(&self) -> [u32; SHA2_U32_COUNT] {
         [self.a, self.e, self.w]
     }
 }

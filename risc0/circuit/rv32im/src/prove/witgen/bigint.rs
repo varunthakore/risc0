@@ -33,7 +33,7 @@ const BIGINT_STATE_LAYOUT: &BigIntStateLayout = LAYOUT_TOP.inst_result.arm12.sta
 const BIGINT_STATE_COUNT: usize = 6 + 16;
 
 #[derive(Clone, Debug)]
-pub(crate) struct BigIntState {
+pub struct BigIntState {
     pub is_ecall: bool,
     pub mode: u32,
     pub pc: WordAddr,
@@ -50,7 +50,7 @@ struct BigInt {
 
 #[derive(Debug)]
 #[debug("{poly_op:?}({mem_op:?}, c:{coeff}, r:{reg}, o:{offset})")]
-pub(crate) struct Instruction {
+pub struct Instruction {
     pub poly_op: PolyOp,
     pub mem_op: MemoryOp,
     pub coeff: i32,
@@ -59,7 +59,7 @@ pub(crate) struct Instruction {
 }
 
 #[derive(Clone, Copy, Debug, FromPrimitive, PartialEq)]
-pub(crate) enum PolyOp {
+pub enum PolyOp {
     Reset,
     Shift,
     SetTerm,
@@ -70,7 +70,7 @@ pub(crate) enum PolyOp {
 }
 
 #[derive(Clone, Copy, Debug, FromPrimitive, PartialEq)]
-pub(crate) enum MemoryOp {
+pub enum MemoryOp {
     Read,
     Write,
     Check,
@@ -178,7 +178,7 @@ impl BigInt {
 }
 
 impl BigIntState {
-    pub(crate) const fn offsets() -> [usize; BIGINT_STATE_COUNT] {
+    pub const fn offsets() -> [usize; BIGINT_STATE_COUNT] {
         [
             BIGINT_STATE_LAYOUT.is_ecall._super.offset,
             BIGINT_STATE_LAYOUT.mode._super.offset,
@@ -205,7 +205,7 @@ impl BigIntState {
         ]
     }
 
-    pub(crate) fn as_array(&self) -> [u32; BIGINT_STATE_COUNT] {
+    pub fn as_array(&self) -> [u32; BIGINT_STATE_COUNT] {
         [
             self.is_ecall as u32,
             self.mode,
@@ -233,7 +233,7 @@ impl BigIntState {
     }
 }
 
-pub(crate) fn ecall_preflight(ctx: &mut Preflight) -> Result<()> {
+pub fn ecall_preflight(ctx: &mut Preflight) -> Result<()> {
     let exec = crate::execute::bigint::ecall(ctx)?;
 
     let state = BigIntState {

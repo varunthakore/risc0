@@ -30,16 +30,16 @@ const BIGINT_ACCUM_STATE_LAYOUT: &BigIntAccumStateLayout = LAYOUT_TOP_ACCUM.user
 const BIGINT_ACCUM_STATE_COUNT: usize = 3 * 4;
 
 #[derive(Debug)]
-pub(crate) struct BytePolyProgram {
-    pub(crate) in_carry: bool,
-    pub(crate) poly: BytePolynomial,
-    pub(crate) term: BytePolynomial,
-    pub(crate) total: BytePolynomial,
-    pub(crate) total_carry: BytePolynomial,
+pub struct BytePolyProgram {
+    pub in_carry: bool,
+    pub poly: BytePolynomial,
+    pub term: BytePolynomial,
+    pub total: BytePolynomial,
+    pub total_carry: BytePolynomial,
 }
 
 impl BytePolyProgram {
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             in_carry: false,
             poly: BytePolynomial::zero(),
@@ -49,7 +49,7 @@ impl BytePolyProgram {
         }
     }
 
-    pub(crate) fn step(&mut self, insn: &Instruction, witness: &[u8]) -> Result<()> {
+    pub fn step(&mut self, insn: &Instruction, witness: &[u8]) -> Result<()> {
         let coeffs = witness.iter().map(|x| *x as i32);
         let delta_poly = BytePolynomial {
             coeffs: SmallVec::from_iter(coeffs),
@@ -112,30 +112,30 @@ impl BytePolyProgram {
 }
 
 #[derive(Clone, Debug, Default)]
-pub(crate) struct BytePolynomial {
+pub struct BytePolynomial {
     pub coeffs: SmallVec<[i32; 64]>,
 }
 
 impl BytePolynomial {
-    pub(crate) fn one() -> Self {
+    pub fn one() -> Self {
         Self {
             coeffs: smallvec![1],
         }
     }
 
-    pub(crate) fn zero() -> Self {
+    pub fn zero() -> Self {
         Self {
             coeffs: smallvec![0],
         }
     }
 
-    pub(crate) fn shift(&self) -> Self {
+    pub fn shift(&self) -> Self {
         let mut ret = self.clone();
         ret.coeffs.insert_from_slice(0, &[0; BIGINT_WIDTH_BYTES]);
         ret
     }
 
-    pub(crate) fn eqz(&self) -> Result<()> {
+    pub fn eqz(&self) -> Result<()> {
         ensure!(
             self.coeffs.iter().all(|&coeff| coeff == 0),
             "Invalid eqz in bigint program"
@@ -182,7 +182,7 @@ impl_op_ex!(*|a: &BytePolynomial, b: i32| -> BytePolynomial { byte_poly_mul_cons
 const MAX_POWERS: usize = BIGINT_WIDTH_BYTES + 1;
 
 #[derive(Clone, Debug)]
-pub(crate) struct BigIntAccumState {
+pub struct BigIntAccumState {
     pub poly: ExtVal,
     pub term: ExtVal,
     pub total: ExtVal,
@@ -197,7 +197,7 @@ impl BigIntAccumState {
         }
     }
 
-    pub(crate) const fn offsets() -> [usize; BIGINT_ACCUM_STATE_COUNT] {
+    pub const fn offsets() -> [usize; BIGINT_ACCUM_STATE_COUNT] {
         [
             BIGINT_ACCUM_STATE_LAYOUT.poly._super.offset,
             BIGINT_ACCUM_STATE_LAYOUT.poly._super.offset + 1,
@@ -214,7 +214,7 @@ impl BigIntAccumState {
         ]
     }
 
-    pub(crate) fn as_array(&self) -> [u32; BIGINT_ACCUM_STATE_COUNT] {
+    pub fn as_array(&self) -> [u32; BIGINT_ACCUM_STATE_COUNT] {
         let poly = self.poly.elems();
         let term = self.term.elems();
         let total = self.total.elems();
@@ -237,14 +237,14 @@ impl BigIntAccumState {
 }
 
 #[derive(Clone, Debug)]
-pub(crate) struct BigIntAccum {
+pub struct BigIntAccum {
     pub state: BigIntAccumState,
     powers: [ExtVal; MAX_POWERS],
     neg_poly: ExtVal,
 }
 
 impl BigIntAccum {
-    pub(crate) fn new(mix: ExtVal) -> Self {
+    pub fn new(mix: ExtVal) -> Self {
         let mut powers = [ExtVal::default(); MAX_POWERS];
         let mut cur = ExtVal::ONE;
         for power in powers.iter_mut() {
@@ -266,7 +266,7 @@ impl BigIntAccum {
         }
     }
 
-    pub(crate) fn step(&mut self, state: &BigIntState) -> Result<()> {
+    pub fn step(&mut self, state: &BigIntState) -> Result<()> {
         let delta_poly = state
             .bytes
             .iter()

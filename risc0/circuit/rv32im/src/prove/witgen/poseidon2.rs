@@ -89,7 +89,7 @@ impl Poseidon2State {
         }
     }
 
-    pub(crate) const fn offsets() -> [usize; P2_STATE_SIZE] {
+    pub const fn offsets() -> [usize; P2_STATE_SIZE] {
         [
             P2_STATE_LAYOUT.has_state._super.offset,
             P2_STATE_LAYOUT.state_addr._super.offset,
@@ -133,7 +133,7 @@ impl Poseidon2State {
         ]
     }
 
-    pub(crate) fn as_array(&self) -> [u32; P2_STATE_SIZE] {
+    pub fn as_array(&self) -> [u32; P2_STATE_SIZE] {
         let zcheck = self.zcheck.elems();
         [
             self.has_state,
@@ -233,13 +233,13 @@ impl Poseidon2 {
     }
 }
 
-pub(crate) struct Checksum {
+pub struct Checksum {
     powers: [ExtVal; DIGEST_WORDS * 2 + 1],
     pub zcheck: ExtVal,
 }
 
 impl Checksum {
-    pub(crate) fn new(rand_z: &ExtVal) -> Self {
+    pub fn new(rand_z: &ExtVal) -> Self {
         let mut cur = ExtVal::ONE;
         let mut powers = [ExtVal::ZERO; DIGEST_WORDS * 2 + 1];
         for power in powers.iter_mut() {
@@ -254,15 +254,15 @@ impl Checksum {
         }
     }
 
-    pub(crate) fn start(&mut self) {
+    pub fn start(&mut self) {
         self.zcheck *= self.powers[16];
     }
 
-    pub(crate) fn clear(&mut self) {
+    pub fn clear(&mut self) {
         self.zcheck = ExtVal::ZERO;
     }
 
-    pub(crate) fn add(&mut self, tx_kind: u32, idx: usize, txn: &RawMemoryTransaction) {
+    pub fn add(&mut self, tx_kind: u32, idx: usize, txn: &RawMemoryTransaction) {
         let mut coeffs = match tx_kind {
             tx::READ => (0, 1),
             tx::PAGE_IN => (0, txn.cycle as i32 - txn.prev_cycle as i32),

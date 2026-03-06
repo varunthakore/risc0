@@ -118,19 +118,29 @@ pub(crate) trait SyscallContext<'a> {
 
 pub(crate) type AssumptionUsage = Vec<(Assumption, AssumptionReceipt)>;
 
+/// The kind of syscall.
 #[derive(Clone, Debug, Enum)]
-pub(crate) enum SyscallKind {
+pub enum SyscallKind {
+    /// Keccak hash syscall.
     Keccak,
+    /// Prove keccak syscall.
     ProveKeccak,
+    /// Read syscall.
     Read,
+    /// Verify integrity syscall.
     VerifyIntegrity,
+    /// Verify integrity v2 syscall.
     VerifyIntegrity2,
+    /// Write syscall.
     Write,
 }
 
+/// Metrics for a syscall kind.
 #[derive(Clone, Debug, Default)]
-pub(crate) struct SyscallMetric {
+pub struct SyscallMetric {
+    /// Number of invocations.
     pub count: u64,
+    /// Total size in bytes.
     pub size: u64,
 }
 

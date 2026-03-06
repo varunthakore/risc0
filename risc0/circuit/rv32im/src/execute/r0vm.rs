@@ -26,7 +26,7 @@ use super::{
 };
 
 #[derive(Clone, Copy, Eq, PartialEq)]
-pub(crate) enum LoadOp {
+pub enum LoadOp {
     Peek,
     Load,
     Record,
@@ -43,7 +43,7 @@ pub enum EcallKind {
     Write,
 }
 
-pub(crate) trait Risc0Context {
+pub trait Risc0Context {
     /// Get the program counter
     fn get_pc(&self) -> ByteAddr;
 
@@ -572,7 +572,7 @@ impl<T: Risc0Context> EmuContext for Risc0Machine<'_, T> {
     }
 }
 
-pub(crate) fn guest_addr(addr: u32) -> Result<ByteAddr> {
+pub fn guest_addr(addr: u32) -> Result<ByteAddr> {
     let addr = ByteAddr(addr);
     if addr < ZERO_PAGE_END_ADDR {
         Err(anyhow!("{addr:?} is an invalid guest address"))

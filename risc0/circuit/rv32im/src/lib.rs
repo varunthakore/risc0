@@ -19,7 +19,7 @@ pub mod execute;
 #[cfg(feature = "prove")]
 pub mod prove;
 pub mod trace;
-mod zirgen;
+pub mod zirgen;
 
 use core::num::TryFromIntError;
 

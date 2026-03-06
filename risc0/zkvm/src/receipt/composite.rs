@@ -40,7 +40,6 @@ use crate::{
 /// proving any assumptions.
 #[derive(Clone, Debug, Deserialize, Serialize, BorshSerialize, BorshDeserialize)]
 #[cfg_attr(test, derive(PartialEq))]
-#[non_exhaustive]
 pub struct CompositeReceipt {
     /// Segment receipts forming the proof of an execution with continuations.
     pub segments: Vec<SegmentReceipt>,

@@ -21,7 +21,8 @@
 pub(crate) mod executor;
 pub(crate) mod profiler;
 mod proto;
-pub(crate) mod syscall;
+/// Syscall definitions and metrics.
+pub mod syscall;
 #[cfg(test)]
 mod tests;
 

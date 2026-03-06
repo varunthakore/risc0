@@ -35,15 +35,15 @@ const POSEIDON_DO_OUT: u32 = 1;
 const POSEIDON_EXTERNAL: u32 = 8;
 const POSEIDON_INTERNAL: u32 = 1;
 const POSEIDON_ENTRY: u32 = 1;
-pub(crate) const POSEIDON_BLOCK_WORDS: u32 = 8;
-pub(crate) const POSEIDON_PAGE_ROUNDS: u32 = PAGE_WORDS as u32 / POSEIDON_BLOCK_WORDS;
+pub const POSEIDON_BLOCK_WORDS: u32 = 8;
+pub const POSEIDON_PAGE_ROUNDS: u32 = PAGE_WORDS as u32 / POSEIDON_BLOCK_WORDS;
 
 const PAGE_CYCLES: u32 = POSEIDON_PAGING + 10 * POSEIDON_PAGE_ROUNDS + POSEIDON_DO_OUT;
 
 const NODE_CYCLES: u32 =
     POSEIDON_PAGING + POSEIDON_LOAD_IN + POSEIDON_EXTERNAL + POSEIDON_INTERNAL + POSEIDON_DO_OUT;
 
-pub(crate) const RESERVED_PAGING_CYCLES: u32 = LOAD_ROOT_CYCLES
+pub const RESERVED_PAGING_CYCLES: u32 = LOAD_ROOT_CYCLES
     + POSEIDON_ENTRY
     + POSEIDON_PAGING
     + RESUME_CYCLES
@@ -55,33 +55,33 @@ pub(crate) const RESERVED_PAGING_CYCLES: u32 = LOAD_ROOT_CYCLES
 const NUM_PAGES: usize = 4 * 1024 * 1024;
 
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
-pub(crate) enum PageState {
+pub enum PageState {
     Unloaded,
     Loaded,
     Dirty,
 }
 
 #[derive(Clone, Copy, Debug)]
-pub(crate) enum PageTraceEvent {
+pub enum PageTraceEvent {
     PageIn { cycles: u32 },
     PageOut { cycles: u32 },
 }
 
 #[derive(Debug)]
-pub(crate) struct PageStates {
+pub struct PageStates {
     states: BitVec,
     indexes: Vec<u32>,
 }
 
 impl PageStates {
-    pub(crate) fn new(size: usize) -> Self {
+    pub fn new(size: usize) -> Self {
         Self {
             states: BitVec::from_elem(size * 2, false),
             indexes: vec![],
         }
     }
 
-    pub(crate) fn set(&mut self, index: u32, value: PageState) {
+    pub fn set(&mut self, index: u32, value: PageState) {
         let set_before = self.get(index) != PageState::Unloaded;
         match value {
             PageState::Unloaded => unimplemented!(),
@@ -101,7 +101,7 @@ impl PageStates {
         }
     }
 
-    pub(crate) fn get(&self, index: u32) -> PageState {
+    pub fn get(&self, index: u32) -> PageState {
         if self.states.get(index as usize * 2).unwrap() {
             // b10 | b11 => Dirty
             PageState::Dirty
@@ -114,15 +114,15 @@ impl PageStates {
         }
     }
 
-    pub(crate) fn iter(&self) -> impl Iterator<Item = (u32, PageState)> + '_ {
+    pub fn iter(&self) -> impl Iterator<Item = (u32, PageState)> + '_ {
         self.indexes.iter().map(|index| (*index, self.get(*index)))
     }
 
-    pub(crate) fn keys(&self) -> impl Iterator<Item = u32> + '_ {
+    pub fn keys(&self) -> impl Iterator<Item = u32> + '_ {
         self.indexes.iter().copied()
     }
 
-    pub(crate) fn clear(&mut self) {
+    pub fn clear(&mut self) {
         self.states.clear();
         self.indexes.clear();
     }
@@ -215,13 +215,13 @@ fn page_table() {
 }
 
 #[derive(Debug)]
-pub(crate) struct PagedMemory {
+pub struct PagedMemory {
     pub image: MemoryImage,
     #[debug(skip)]
     page_table: PageTable,
     #[debug(skip)]
     page_cache: Vec<Page>,
-    pub(crate) page_states: PageStates,
+    pub page_states: PageStates,
     pub cycles: u32,
     user_registers: [u32; REG_MAX],
     machine_registers: [u32; REG_MAX],
@@ -230,7 +230,7 @@ pub(crate) struct PagedMemory {
 }
 
 impl PagedMemory {
-    pub(crate) fn new(mut image: MemoryImage, tracing_enabled: bool) -> Self {
+    pub fn new(mut image: MemoryImage, tracing_enabled: bool) -> Self {
         let mut machine_registers = [0; REG_MAX];
         let mut user_registers = [0; REG_MAX];
         let page_idx = MACHINE_REGS_ADDR.waddr().page_idx();
@@ -253,14 +253,14 @@ impl PagedMemory {
         }
     }
 
-    pub(crate) fn reset(&mut self) {
+    pub fn reset(&mut self) {
         self.page_table.clear();
         self.page_cache.clear();
         self.page_states.clear();
         self.cycles = RESERVED_PAGING_CYCLES;
     }
 
-    pub(crate) fn page_indexes(&self) -> BTreeSet<u32> {
+    pub fn page_indexes(&self) -> BTreeSet<u32> {
         self.page_states.keys().collect()
     }
 
@@ -301,7 +301,7 @@ impl PagedMemory {
         }
     }
 
-    pub(crate) fn peek(&mut self, addr: WordAddr) -> Result<u32> {
+    pub fn peek(&mut self, addr: WordAddr) -> Result<u32> {
         if addr >= MEMORY_END_ADDR {
             bail!("Invalid peek address: {addr:?}");
         }
@@ -312,7 +312,7 @@ impl PagedMemory {
         }
     }
 
-    pub(crate) fn peek_page(&mut self, page_idx: u32) -> Result<Vec<u8>> {
+    pub fn peek_page(&mut self, page_idx: u32) -> Result<Vec<u8>> {
         if let Some(cache_idx) = self.page_table.get(page_idx) {
             // Loaded, get from cache
             Ok(self.page_cache[cache_idx].data().clone())
@@ -336,7 +336,7 @@ impl PagedMemory {
         Ok(self.page_cache[cache_idx].load(addr))
     }
 
-    pub(crate) fn load(&mut self, addr: WordAddr) -> Result<u32> {
+    pub fn load(&mut self, addr: WordAddr) -> Result<u32> {
         if addr >= MEMORY_END_ADDR {
             bail!("Invalid load address: {addr:?}");
         }
@@ -347,7 +347,7 @@ impl PagedMemory {
         }
     }
 
-    pub(crate) fn load_register(&mut self, base: WordAddr, idx: usize) -> u32 {
+    pub fn load_register(&mut self, base: WordAddr, idx: usize) -> u32 {
         if base == USER_REGS_ADDR.waddr() {
             self.user_registers[idx]
         } else if base == MACHINE_REGS_ADDR.waddr() {
@@ -365,7 +365,7 @@ impl PagedMemory {
         Ok(())
     }
 
-    pub(crate) fn store(&mut self, addr: WordAddr, word: u32) -> Result<()> {
+    pub fn store(&mut self, addr: WordAddr, word: u32) -> Result<()> {
         if addr >= MEMORY_END_ADDR {
             bail!("Invalid store address: {addr:?}");
         }
@@ -377,7 +377,7 @@ impl PagedMemory {
         }
     }
 
-    pub(crate) fn store_register(&mut self, base: WordAddr, idx: usize, word: u32) {
+    pub fn store_register(&mut self, base: WordAddr, idx: usize, word: u32) {
         if base == USER_REGS_ADDR.waddr() {
             self.user_registers[idx] = word;
         } else if base == MACHINE_REGS_ADDR.waddr() {
@@ -419,7 +419,7 @@ impl PagedMemory {
         }
     }
 
-    pub(crate) fn commit(&mut self) -> (MemoryImage, Digest, Digest) {
+    pub fn commit(&mut self) -> (MemoryImage, Digest, Digest) {
         // tracing::trace!("commit: {self:#?}");
 
         self.write_registers();
@@ -486,11 +486,11 @@ impl PagedMemory {
         }
     }
 
-    pub(crate) fn trace_events(&self) -> &[PageTraceEvent] {
+    pub fn trace_events(&self) -> &[PageTraceEvent] {
         &self.trace_events
     }
 
-    pub(crate) fn clear_trace_events(&mut self) {
+    pub fn clear_trace_events(&mut self) {
         self.trace_events.clear();
     }
 
@@ -507,14 +507,11 @@ impl PagedMemory {
     }
 }
 
-pub(crate) fn page_idx(node_idx: u32) -> u32 {
+pub fn page_idx(node_idx: u32) -> u32 {
     node_idx - MEMORY_PAGES as u32
 }
 
-pub(crate) fn compute_partial_image(
-    input_image: MemoryImage,
-    indexes: BTreeSet<u32>,
-) -> MemoryImage {
+pub fn compute_partial_image(input_image: MemoryImage, indexes: BTreeSet<u32>) -> MemoryImage {
     let mut image = MemoryImage::default();
 
     for node_idx in &indexes {
