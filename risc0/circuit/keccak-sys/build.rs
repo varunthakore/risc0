@@ -31,7 +31,7 @@ fn build_cpu_kernels() {
     rerun_if_changed("kernels/cxx");
     KernelBuild::new(KernelType::Cpp)
         .files(glob_paths("kernels/cxx/*.cpp"))
-        .include(env::var("DEP_RISC0_SYS_CXX_ROOT").unwrap())
+        .include(env::var("DEP_RISC0_V2_SYS_CXX_ROOT").unwrap())
         .compile("risc0_keccak_cpu");
 }
 
@@ -69,7 +69,7 @@ fn build_cuda_kernels() {
         .flag("-std=c++17")
         .flag("-Xcompiler")
         .flag("-Wno-unused-function,-Wno-unused-parameter")
-        .include(env::var("DEP_RISC0_SYS_CUDA_ROOT").unwrap())
+        .include(env::var("DEP_RISC0_V2_SYS_CUDA_ROOT").unwrap())
         .include(env::var("DEP_SPPARK_ROOT").unwrap());
     if env::var_os("NVCC_PREPEND_FLAGS").is_none() && env::var_os("NVCC_APPEND_FLAGS").is_none() {
         build.flag("-arch=native");

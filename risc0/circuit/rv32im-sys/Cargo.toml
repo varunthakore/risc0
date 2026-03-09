@@ -6,7 +6,7 @@ edition = { workspace = true }
 license = { workspace = true }
 homepage = { workspace = true }
 repository = { workspace = true }
-links = "risc0-circuit-rv32im-sys"
+links = "risc0-v2-circuit-rv32im-sys"
 
 [dependencies]
 cust = { version = "0.3", optional = true }

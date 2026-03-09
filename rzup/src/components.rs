@@ -79,7 +79,7 @@ fn extract_archive(env: &Environment, archive_path: &Path, target_dir: &Path) ->
     use std::fs::File;
     use std::io::BufReader;
     use tar::Archive;
-    use xz::bufread::XzDecoder;
+    use liblzma::bufread::XzDecoder;
 
     env.emit(RzupEvent::Debug {
         message: format!(

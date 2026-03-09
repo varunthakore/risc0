@@ -406,7 +406,7 @@ mod tests {
             drop(tar_builder);
 
             let mut tar_xz_bytes = vec![];
-            let mut encoder = xz::write::XzEncoder::new(&mut tar_xz_bytes, 1);
+            let mut encoder = liblzma::write::XzEncoder::new(&mut tar_xz_bytes, 1);
             encoder.write_all(&tar_bytes).unwrap();
             drop(encoder);
 
