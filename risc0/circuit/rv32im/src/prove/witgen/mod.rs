@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub(crate) mod bigint;
-pub(crate) mod byte_poly;
-pub(crate) mod paged_map;
-pub(crate) mod poseidon2;
-pub(crate) mod preflight;
-pub(crate) mod sha2;
+pub mod bigint;
+pub mod byte_poly;
+pub mod paged_map;
+pub mod poseidon2;
+pub mod preflight;
+pub mod sha2;
 #[cfg(test)]
 mod tests;
 
@@ -53,11 +53,11 @@ use crate::{
 
 #[derive(Clone, Default)]
 pub struct PreflightResults {
-    global: Vec<Val>,
-    injector: Injector,
-    cycles: usize,
-    trace: PreflightTrace,
-    po2: u32,
+    pub global: Vec<Val>,
+    pub injector: Injector,
+    pub cycles: usize,
+    pub trace: PreflightTrace,
+    pub po2: u32,
 }
 
 impl PreflightResults {
@@ -90,7 +90,7 @@ impl PreflightResults {
     }
 }
 
-pub(crate) struct WitnessGenerator<H: Hal> {
+pub struct WitnessGenerator<H: Hal> {
     cycles: usize,
     pub global: MetaBuffer<H>,
     pub code: MetaBuffer<H>,
@@ -223,7 +223,7 @@ where
     }
 }
 
-fn build_injector(trace: &PreflightTrace, cycles: usize) -> Injector {
+pub fn build_injector(trace: &PreflightTrace, cycles: usize) -> Injector {
     scope!("build_injector");
 
     // Set stateful columns from 'top'
@@ -269,7 +269,7 @@ fn build_injector(trace: &PreflightTrace, cycles: usize) -> Injector {
     injector
 }
 
-fn build_global_vec(segment: &Segment, trace: &PreflightTrace) -> Vec<Val> {
+pub fn build_global_vec(segment: &Segment, trace: &PreflightTrace) -> Vec<Val> {
     scope!("build_global_vec");
 
     let mut global = vec![Val::INVALID; REGCOUNT_GLOBAL];
@@ -327,7 +327,7 @@ fn build_global_vec(segment: &Segment, trace: &PreflightTrace) -> Vec<Val> {
 }
 
 #[derive(Clone, Debug, Default)]
-struct Injector {
+pub struct Injector {
     rows: usize,
     offsets: Vec<u32>,
     values: Vec<Val>,
@@ -335,7 +335,7 @@ struct Injector {
 }
 
 impl Injector {
-    fn new(rows: usize) -> Self {
+    pub fn new(rows: usize) -> Self {
         let mut index = Vec::with_capacity(rows + 1);
         index.push(0);
         Self {
@@ -377,7 +377,7 @@ impl Injector {
     }
 }
 
-fn node_addr_to_idx(addr: WordAddr) -> u32 {
+pub fn node_addr_to_idx(addr: WordAddr) -> u32 {
     (MERKLE_TREE_END_ADDR - addr).0 / DIGEST_WORDS as u32
 }
 

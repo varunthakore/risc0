@@ -13,16 +13,16 @@
 // limitations under the License.
 
 pub(crate) mod bibc;
-pub(crate) mod bigint;
+pub mod bigint;
 mod executor;
 pub mod gdb;
-pub(crate) mod pager;
+pub mod pager;
 pub mod platform;
-pub(crate) mod poseidon2;
-pub(crate) mod r0vm;
-pub(crate) mod rv32im;
-pub(crate) mod segment;
-pub(crate) mod sha2;
+pub mod poseidon2;
+pub mod r0vm;
+pub mod rv32im;
+pub mod segment;
+pub mod sha2;
 mod syscall;
 #[cfg(test)]
 mod tests;

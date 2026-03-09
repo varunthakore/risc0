@@ -117,9 +117,11 @@ pub struct Segment {
     /// The index of this [Segment] within the [Session]
     pub index: u32,
 
-    pub(crate) inner: risc0_circuit_rv32im::execute::Segment,
+    /// The inner circuit segment containing execution state.
+    pub inner: risc0_circuit_rv32im::execute::Segment,
 
-    pub(crate) output: Option<Output>,
+    /// The optional output produced at the end of this segment.
+    pub output: Option<Output>,
 }
 
 impl Segment {
@@ -137,11 +139,15 @@ impl Segment {
 
 /// The results of running preflight on a [Segment].
 pub struct PreflightResults {
-    pub(crate) inner: risc0_circuit_rv32im::prove::PreflightResults,
+    /// The circuit-level preflight results (trace, global, injector, cycles, po2).
+    pub inner: risc0_circuit_rv32im::prove::PreflightResults,
 
-    pub(crate) terminate_state: Option<TerminateState>,
-    pub(crate) output: Option<Output>,
-    pub(crate) segment_index: u32,
+    /// The optional terminate state at the end of this segment.
+    pub terminate_state: Option<TerminateState>,
+    /// The optional output produced at the end of this segment.
+    pub output: Option<Output>,
+    /// The index of the [Segment] this [PreflightResults] came from.
+    pub segment_index: u32,
 }
 
 impl PreflightResults {

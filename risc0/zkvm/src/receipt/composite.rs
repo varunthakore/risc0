@@ -40,7 +40,6 @@ use crate::{
 /// proving any assumptions.
 #[derive(Clone, Debug, Deserialize, Serialize, BorshSerialize, BorshDeserialize)]
 #[cfg_attr(test, derive(PartialEq))]
-#[non_exhaustive]
 pub struct CompositeReceipt {
     /// Segment receipts forming the proof of an execution with continuations.
     #[debug("{} segments", segments.len())]
@@ -245,7 +244,6 @@ impl CompositeReceipt {
 /// collectively  prove a claim. It can contain any of the individual receipt types, and so it's
 /// verifier is a combination of the verifiers for every other receipt type.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[non_exhaustive]
 pub struct CompositeReceiptVerifierParameters {
     /// Verifier parameters related to [SegmentReceipt].
     pub segment: MaybePruned<SegmentReceiptVerifierParameters>,

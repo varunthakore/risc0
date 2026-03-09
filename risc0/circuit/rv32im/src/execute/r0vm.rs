@@ -26,7 +26,7 @@ use super::{
 };
 
 #[derive(Clone, Copy, Eq, PartialEq)]
-pub(crate) enum LoadOp {
+pub enum LoadOp {
     Peek,
     Load,
     Record,
@@ -43,7 +43,7 @@ pub enum EcallKind {
     Write,
 }
 
-pub(crate) trait Risc0Context {
+pub trait Risc0Context {
     /// Get the program counter
     fn get_pc(&self) -> ByteAddr;
 

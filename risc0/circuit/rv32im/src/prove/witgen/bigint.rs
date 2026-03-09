@@ -33,7 +33,7 @@ const BIGINT_STATE_LAYOUT: &BigIntStateLayout = LAYOUT_TOP.inst_result.arm12.sta
 const BIGINT_STATE_COUNT: usize = 6 + 16;
 
 #[derive(Clone, Debug)]
-pub(crate) struct BigIntState {
+pub struct BigIntState {
     pub is_ecall: bool,
     pub mode: u32,
     pub pc: WordAddr,
@@ -59,7 +59,7 @@ pub(crate) struct Instruction {
 }
 
 #[derive(Clone, Copy, Debug, FromPrimitive, PartialEq)]
-pub(crate) enum PolyOp {
+pub enum PolyOp {
     Reset,
     Shift,
     SetTerm,

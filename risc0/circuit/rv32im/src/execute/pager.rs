@@ -254,7 +254,7 @@ impl WorkingImage {
 }
 
 #[derive(Debug)]
-pub(crate) struct PagedMemory {
+pub struct PagedMemory {
     pub(crate) image: WorkingImage,
     #[debug(skip)]
     page_table: PageTable,

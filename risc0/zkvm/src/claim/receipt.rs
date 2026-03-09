@@ -151,7 +151,8 @@ impl ReceiptClaim {
         Ok(())
     }
 
-    pub(crate) fn decode_from_seal_v2(
+    /// Decode a [`ReceiptClaim`] from a v2-format STARK seal.
+    pub fn decode_from_seal_v2(
         seal: &[u32],
         _po2: Option<u32>,
     ) -> anyhow::Result<ReceiptClaim> {

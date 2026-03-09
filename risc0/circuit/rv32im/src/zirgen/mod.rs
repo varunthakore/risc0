@@ -18,16 +18,16 @@ use risc0_zkp::{
     taps::TapSet,
 };
 
-pub(crate) mod info;
+pub mod info;
 pub(crate) mod poly_ext;
-pub(crate) mod taps;
+pub mod taps;
 
 pub struct CircuitImpl;
 
 #[allow(unused)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
-pub(crate) mod circuit {
+pub mod circuit {
     use risc0_zkp::layout::Reg;
 
     macro_rules! set_field {

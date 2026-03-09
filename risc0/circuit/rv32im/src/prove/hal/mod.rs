@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub(crate) mod cpu;
+pub mod cpu;
 #[cfg(feature = "cuda")]
 pub(crate) mod cuda;
 
@@ -44,7 +44,7 @@ use crate::{
     RV32IM_SEAL_VERSION,
 };
 
-pub(crate) struct MetaBuffer<H: Hal> {
+pub struct MetaBuffer<H: Hal> {
     pub buf: H::Buffer<H::Elem>,
     pub rows: usize,
     pub cols: usize,
@@ -65,7 +65,6 @@ where
         }
     }
 
-    #[cfg(test)]
     pub fn to_vec(&self) -> Vec<Val> {
         self.buf.to_vec()
     }
@@ -73,13 +72,13 @@ where
 
 #[allow(dead_code)]
 #[derive(Clone, Copy, PartialEq)]
-pub(crate) enum StepMode {
+pub enum StepMode {
     Parallel,
     SeqForward,
     SeqReverse,
 }
 
-pub(crate) trait CircuitWitnessGenerator<H: Hal> {
+pub trait CircuitWitnessGenerator<H: Hal> {
     fn generate_witness(
         &self,
         mode: StepMode,
@@ -89,7 +88,7 @@ pub(crate) trait CircuitWitnessGenerator<H: Hal> {
     ) -> Result<()>;
 }
 
-pub(crate) trait CircuitAccumulator<H: Hal> {
+pub trait CircuitAccumulator<H: Hal> {
     fn step_accum(
         &self,
         preflight: &PreflightTrace,

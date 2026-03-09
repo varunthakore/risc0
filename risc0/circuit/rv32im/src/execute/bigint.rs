@@ -39,9 +39,9 @@ const MAX_NONDET_PROGRAM_SIZE: usize = 10 << 20; // 10 MB
 pub(crate) const BIGINT_WIDTH_WORDS: usize = 4;
 
 /// BigInt width, in bytes, handled by the BigInt accelerator circuit.
-pub(crate) const BIGINT_WIDTH_BYTES: usize = BIGINT_WIDTH_WORDS * WORD_SIZE;
+pub const BIGINT_WIDTH_BYTES: usize = BIGINT_WIDTH_WORDS * WORD_SIZE;
 
-pub(crate) type BigIntBytes = [u8; BIGINT_WIDTH_BYTES];
+pub type BigIntBytes = [u8; BIGINT_WIDTH_BYTES];
 pub(crate) type BigIntWitness = BTreeMap<WordAddr, BigIntBytes>;
 
 struct BigIntIOImpl<'a, Risc0ContextT> {

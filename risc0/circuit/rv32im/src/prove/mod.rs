@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod hal;
+pub mod hal;
 #[cfg(test)]
 mod tests;
-mod witgen;
+pub mod witgen;
 
 use anyhow::Result;
 use cfg_if::cfg_if;

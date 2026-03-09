@@ -36,7 +36,7 @@ const BABY_BEAR_P_U32: u32 = baby_bear::P;
 const BABY_BEAR_P_U64: u64 = baby_bear::P as u64;
 
 #[derive(Clone, Debug, Default)]
-pub(crate) struct Poseidon2State {
+pub struct Poseidon2State {
     pub has_state: u32,
     pub state_addr: u32,
     pub buf_out_addr: u32,
