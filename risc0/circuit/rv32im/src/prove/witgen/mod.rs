@@ -91,7 +91,7 @@ impl PreflightResults {
 }
 
 pub struct WitnessGenerator<H: Hal> {
-    cycles: usize,
+    pub cycles: usize,
     pub global: MetaBuffer<H>,
     pub code: MetaBuffer<H>,
     pub data: MetaBuffer<H>,
